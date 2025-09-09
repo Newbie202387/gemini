@@ -101,7 +101,7 @@ export default function Testimonials() {
             viewport={{ once: true, amount: 0.3 }}
             className="text-xl text-gray-300 max-w-2xl mx-auto"
           >
-            Don&apos;t just take our word for it. Here's what our satisfied
+            Don&apos;t just take our word for it. Here&apos;s what our satisfied
             clients have to say about working with us.
           </motion.p>
         </div>
@@ -194,7 +194,7 @@ export default function Testimonials() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
                   >
-                    "{testimonial.content}"
+                    &apos;{testimonial.content}&apos;
                   </motion.p>
                 </div>
 
