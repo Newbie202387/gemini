@@ -86,7 +86,7 @@ export default function Contact() {
       } else {
         throw new Error("Failed to send message");
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -109,7 +109,7 @@ export default function Contact() {
       icon: Mail,
       title: "Email",
       value: "info@geminipixelcraft.com",
-      subtitle: "We'll respond within 2 hours",
+      subtitle: "We'll respond within 24 hours",
       color: "cyan",
     },
     {
@@ -129,7 +129,7 @@ export default function Contact() {
     {
       icon: Clock,
       title: "Response Time",
-      value: "Within 2 hours",
+      value: "Within 24 hours",
       subtitle: "Usually much faster!",
       color: "cyan",
     },
@@ -207,7 +207,7 @@ export default function Contact() {
           viewport={{ once: true, amount: 0.3 }}
         >
           <motion.h2
-            className="text-4xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent"
+            className="text-4xl lg:text-5xl font-bold mb-6 py-5 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}

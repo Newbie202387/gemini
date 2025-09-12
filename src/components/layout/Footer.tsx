@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Mail,
   Phone,
@@ -15,6 +16,8 @@ import Image from "next/image";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Newsletter state
   const [email, setEmail] = useState("");
@@ -25,47 +28,83 @@ export default function Footer() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const services = [
-    { name: "Web Development", href: "#services" },
-    { name: "Mobile Apps", href: "#services" },
-    { name: "E-commerce", href: "#services" },
-    { name: "SEO Optimization", href: "#services" },
-    { name: "Maintenance", href: "#services" },
-    { name: "Consulting", href: "#contact" },
+    { name: "Web Development", href: "services", type: "section" as const },
+    { name: "Mobile Apps", href: "services", type: "section" as const },
+    { name: "E-commerce", href: "services", type: "section" as const },
+    { name: "SEO Optimization", href: "services", type: "section" as const },
+    { name: "Maintenance", href: "services", type: "section" as const },
+    { name: "Consulting", href: "contact", type: "section" as const },
   ];
 
   const company = [
-    { name: "About Us", href: "#about" },
-    { name: "Our Process", href: "#process" },
-    { name: "Portfolio", href: "#portfolio" },
-    { name: "Testimonials", href: "#testimonials" },
-    { name: "Careers", href: "#careers" },
-    { name: "Blog", href: "#blog" },
+    { name: "About Us", href: "about", type: "section" as const },
+    { name: "Our Process", href: "process", type: "section" as const },
+    { name: "Portfolio", href: "portfolio", type: "section" as const },
+    { name: "Testimonials", href: "testimonials", type: "section" as const },
+    { name: "Careers", href: "/pages/careers", type: "page" as const },
+    { name: "Blog", href: "blog", type: "section" as const },
   ];
 
   const support = [
-    { name: "Help Center", href: "#help" },
-    { name: "Contact Us", href: "#contact" },
-    { name: "System Status", href: "#status" },
-    { name: "Documentation", href: "#docs" },
-    { name: "API Reference", href: "#api" },
+    { name: "Help Center", href: "/pages/help-center", type: "page" as const },
+    { name: "Contact Us", href: "contact", type: "section" as const },
+    {
+      name: "System Status",
+      href: "/pages/system-status",
+      type: "page" as const,
+    },
+    {
+      name: "Documentation",
+      href: "/pages/documentation",
+      type: "page" as const,
+    },
+    {
+      name: "API Reference",
+      href: "/pages/api-reference",
+      type: "page" as const,
+    },
   ];
 
   const legal = [
-    { name: "Privacy Policy", href: "#privacy" },
-    { name: "Terms of Service", href: "#terms" },
-    { name: "Cookie Policy", href: "#cookies" },
-    { name: "GDPR", href: "#gdpr" },
+    {
+      name: "Privacy Policy",
+      href: "/pages/privacy-policy",
+      type: "page" as const,
+    },
+    {
+      name: "Terms of Service",
+      href: "/pages/terms-of-service",
+      type: "page" as const,
+    },
+    {
+      name: "Cookie Policy",
+      href: "/pages/cookie-policy",
+      type: "page" as const,
+    },
+    { name: "GDPR", href: "/pages/gdpr", type: "page" as const },
   ];
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId.replace("#", ""));
-    if (element) {
-      const headerHeight = 80;
-      const elementPosition = element.offsetTop - headerHeight;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: "smooth",
-      });
+  // Navigation handler
+  const handleNavigation = (item: { href: string; type: string }) => {
+    if (item.type === "section") {
+      if (pathname === "/") {
+        // Scroll to section on home page
+        const element = document.getElementById(item.href);
+        if (element) {
+          const headerHeight = 80;
+          const elementPosition = element.offsetTop - headerHeight;
+          window.scrollTo({
+            top: elementPosition,
+            behavior: "smooth",
+          });
+        }
+      } else {
+        // Navigate to home page with hash
+        router.push(`/#${item.href}`);
+      }
+    } else if (item.type === "page") {
+      // Navigate to separate page
+      router.push(item.href);
     }
   };
 
@@ -118,8 +157,12 @@ export default function Footer() {
         setEmail("");
 
         // Track newsletter signup (if analytics is available)
-        if (typeof window !== "undefined" && (window as any).gtag) {
-          (window as any).gtag("event", "newsletter_signup", {
+        interface WindowWithGtag extends Window {
+          gtag?: (...args: unknown[]) => void;
+        }
+        const win = window as WindowWithGtag;
+        if (typeof window !== "undefined" && win.gtag) {
+          win.gtag("event", "newsletter_signup", {
             event_category: "engagement",
             event_label: "footer_newsletter",
           });
@@ -155,13 +198,13 @@ export default function Footer() {
 
   const LinkedinIcon = () => (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.920-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
     </svg>
   );
 
   const InstagramIcon = () => (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12.017 0C8.396 0 7.929.01 7.102.048 6.273.088 5.718.222 5.238.42a5.893 5.893 0 00-2.126 1.384 5.893 5.893 0 00-1.384 2.126C1.53 4.41 1.396 4.961 1.356 5.79.018 6.615.008 7.082.008 12.017c0 4.624.01 5.09.048 5.918.04.83.174 1.381.372 1.861.204.777.478 1.44.923 1.885.444.445 1.107.719 1.884.923.48.198 1.031.332 1.861.372.827.04 1.294.048 5.91.048 4.624 0 5.09-.01 5.91-.048.83-.04 1.38-.174 1.86-.372a5.844 5.844 0 001.885-.923 5.844 5.844 0 00.923-1.885c.198-.48.332-1.031.372-1.861.04-.827.048-1.294.048-5.91 0-4.624-.01-5.09-.048-5.91-.04-.83-.174-1.38-.372-1.86a5.844 5.844 0 00-.923-1.885 5.844 5.844 0 00-1.885-.923c-.48-.198-1.031-.332-1.861-.372C17.107.01 16.64.001 12.017.001zM12.017 2.163c4.624 0 5.027.01 6.807.048.73.04 1.195.166 1.478.276.372.145.64.318.92.598.28.28.453.548.598.92.11.283.236.748.276 1.478.048 1.78.06 2.183.06 6.807 0 4.624-.012 5.027-.06 6.807-.04.73-.166 1.195-.276 1.478-.145.372-.318.64-.598.92-.28.28-.548.453-.92.598-.283.11-.748.236-1.478.276-1.78.048-2.183.06-6.807.06-4.624 0-5.027-.012-6.807-.06-.73-.04-1.195-.166-1.478-.276a2.478 2.478 0 01-.92-.598 2.478 2.478 0 01-.598-.92c-.11-.283-.236-.748-.276-1.478-.048-1.78-.06-2.183-.06-6.807 0-4.624.012-5.027.06-6.807.04-.73.166-1.195.276-1.478.145-.372.318-.64.598-.92.28-.28.548-.453.92-.598.283-.11.748-.236 1.478-.276 1.78-.048 2.183-.06 6.807-.06zM12.017 5.838a6.179 6.179 0 100 12.358 6.179 6.179 0 000-12.358zM12.017 16a4 4 0 110-8 4 4 0 010 8zm6.624-10.845a1.44 1.44 0 10-2.88 0 1.44 1.44 0 002.88 0z" />
+      <path d="M12.017 0C8.396 0 7.929.01 7.102.048 6.273.088 5.718.222 5.238.42a5.893 5.893 0 00-2.126 1.384 5.893 5.893 0 00-1.384 2.126C1.53 4.41 1.396 4.961 1.356 5.79.018 6.615.008 7.082.008 12.017c0 4.624.01 5.09.048 5.918.04.83.174 1.381.372 1.861.204.777.478 1.44.923 1.885.444.445 1.107.719 1.884.923.48.198 1.031.332 1.861.372.827.04 1.294.048 5.91.048 4.624 0 5.09-.01 5.91-.048.83-.04 1.38-.174 1.86-.372a5.844 5.844 0 001.885-.923 5.844 5.844 0 00.923-1.885c.198-.48.332-1.031.372-1.861.04-.827.048-1.294.048-5.91 0-4.624-.01-5.09-.048-5.91-.04-.83-.174-1.38-.372-1.86a5.844 5.844 0 00-.923-1.885 5.844 5.844 0 00-1.885-.923c-.48-.198-1.031-.332-1.861-.372C17.107.01 16.64.001 12.017.001zM12.017 2.163c4.624 0 5.027.01 6.807.048.73.04 1.195.166 1.478.276.372.145.64.318.92.598.280.28.453.548.598.92.11.283.236.748.276 1.478.048 1.78.06 2.183.06 6.807 0 4.624-.012 5.027-.06 6.807-.04.73-.166 1.195-.276 1.478-.145.372-.318.64-.598.92-.28.28-.548.453-.92.598-.283.11-.748.236-1.478.276-1.78.048-2.183.06-6.807.06-4.624 0-5.027-.012-6.807-.06-.73-.04-1.195-.166-1.478-.276a2.478 2.478 0 01-.92-.598 2.478 2.478 0 01-.598-.92c-.11-.283-.236-.748-.276-1.478-.048-1.78-.06-2.183-.06-6.807 0-4.624.012-5.027.06-6.807.04-.73.166-1.195.276-1.478.145-.372.318-.64.598-.92.28-.28.548-.453.92-.598.283-.11.748-.236 1.478-.276 1.78-.048 2.183-.06 6.807-.06zM12.017 5.838a6.179 6.179 0 100 12.358 6.179 6.179 0 000-12.358zM12.017 16a4 4 0 110-8 4 4 0 010 8zm6.624-10.845a1.44 1.44 0 10-2.88 0 1.44 1.44 0 002.88 0z" />
     </svg>
   );
 
@@ -187,7 +230,7 @@ export default function Footer() {
 
             <form
               onSubmit={handleNewsletterSubmit}
-              className="max-w-md mx-auto"
+              className="极狐 max-w-md mx-auto"
             >
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
                 <input
@@ -224,7 +267,7 @@ export default function Footer() {
               )}
 
               {submitStatus === "error" && (
-                <div className="flex items-center justify-center text-red-400 text-sm mb-2">
+                <div className="flex items-center justify-center text-red-400 text-sm mb极狐 -2">
                   <AlertCircle className="w-4 h-4 mr-2" />
                   {errorMessage}
                 </div>
@@ -259,7 +302,7 @@ export default function Footer() {
                   Gemini Pixel Craft
                 </span>
                 <div className="text-sm text-gray-400 -mt-1">
-                  Web Development Excellence
+                  Web Development & Design
                 </div>
               </div>
             </Link>
@@ -299,7 +342,7 @@ export default function Footer() {
             {/* Social Links */}
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/geminipixelcraft"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-400 transition-colors group"
                 aria-label="Facebook"
               >
@@ -314,13 +357,13 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-400 transition-colors group"
+                className="w-10 h-10 bg-gray-800 rounded-full极狐  flex items-center justify-center hover:bg-cyan-400 transition-colors group"
                 aria-label="LinkedIn"
               >
                 <LinkedinIcon />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/geminipixelcraft/"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-400 transition-colors group"
                 aria-label="Instagram"
               >
@@ -343,7 +386,7 @@ export default function Footer() {
               {services.map((item) => (
                 <li key={item.name}>
                   <button
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => handleNavigation(item)}
                     className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
                   >
                     {item.name}
@@ -360,13 +403,23 @@ export default function Footer() {
             <ul className="space-y-3">
               {company.map((item) => (
                 <li key={item.name}>
-                  <button
-                    onClick={() => scrollToSection(item.href)}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
-                  >
-                    {item.name}
-                    <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
+                  {item.type === "page" ? (
+                    <Link
+                      href={item.href}
+                      className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
+                    >
+                      {item.name}
+                      <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => handleNavigation(item)}
+                      className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
+                    >
+                      {item.name}
+                      <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -378,13 +431,23 @@ export default function Footer() {
             <ul className="space-y-3">
               {support.map((item) => (
                 <li key={item.name}>
-                  <button
-                    onClick={() => scrollToSection(item.href)}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
-                  >
-                    {item.name}
-                    <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
+                  {item.type === "page" ? (
+                    <Link
+                      href={item.href}
+                      className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
+                    >
+                      {item.name}
+                      <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => handleNavigation(item)}
+                      className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
+                    >
+                      {item.name}
+                      <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -405,13 +468,23 @@ export default function Footer() {
             <ul className="space-y-3">
               {legal.map((item) => (
                 <li key={item.name}>
-                  <button
-                    onClick={() => scrollToSection(item.href)}
-                    className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
-                  >
-                    {item.name}
-                    <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
+                  {item.type === "page" ? (
+                    <Link
+                      href={item.href}
+                      className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
+                    >
+                      {item.name}
+                      <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => handleNavigation(item)}
+                      className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center group"
+                    >
+                      {item.name}
+                      <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -444,12 +517,12 @@ export default function Footer() {
               Tampa, FL.
             </div>
 
-            <div className="flex items-center space-x-6 text-sm text-gray-400">
+            <div className="flex items-center space-y-4 md:space-y-0 md:space-x-6 text-sm text-gray-400 flex-col md:flex-row">
               <span className="flex items-center">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
                 All systems operational
               </span>
-              <span>Response time: &lt;2 hours</span>
+              <span>Response time: &lt;24 hours</span>
             </div>
           </div>
         </div>

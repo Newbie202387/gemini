@@ -198,7 +198,7 @@ export default function Portfolio() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 transition-all duration-300"
+                        className="border-cyan-400 text-cyan-400 bg-cyan-400/50 hover:bg-cyan-400 hover:text-gray-900 transition-all duration-300"
                       >
                         <ExternalLink className="h-4 w-4 mr-1" />
                         Live Demo
@@ -213,7 +213,7 @@ export default function Portfolio() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-fuchsia-400 text-fuchsia-400 hover:bg-fuchsia-400 hover:text-gray-900 transition-all duration-300"
+                        className="border-fuchsia-400 text-fuchsia-400 bg-fuchsia-400/50 hover:bg-fuchsia-400 hover:text-gray-900 transition-all duration-300"
                       >
                         <Github className="h-4 w-4 mr-1" />
                         Code

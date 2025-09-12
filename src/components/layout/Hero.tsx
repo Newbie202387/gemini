@@ -206,11 +206,12 @@ export default function Hero() {
             </Button>
             <div className="aspect-video bg-gray-800 flex items-center justify-center">
               <div className="text-center text-white">
-                <Play className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p>Demo video would be embedded here</p>
-                <p className="text-sm opacity-75">
-                  Replace with actual video URL
-                </p>
+                <video
+                  src="/videos/demo.mp4"
+                  controls
+                  autoPlay
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>

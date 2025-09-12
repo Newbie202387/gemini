@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -9,44 +10,55 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
 
-      // Update active section based on scroll position
-      const sections = [
-        "hero",
-        "services",
-        "portfolio",
-        "process",
-        "pricing",
-        "contact",
-      ];
-      const currentSection = sections.find((section) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
-      setActiveSection(currentSection || "");
+      // Only update active section if we're on the home page
+      if (pathname === "/") {
+        const sections = [
+          "hero",
+          "services",
+          "portfolio",
+          "process",
+          "pricing",
+          "blog",
+          "contact",
+        ];
+        const currentSection = sections.find((section) => {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            return rect.top <= 100 && rect.bottom >= 100;
+          }
+          return false;
+        });
+        setActiveSection(currentSection || "");
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const headerHeight = 80;
-      const elementPosition = element.offsetTop - headerHeight;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: "smooth",
-      });
+  const handleNavigation = (sectionId: string) => {
+    if (pathname === "/") {
+      // On home page: scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const headerHeight = 80;
+        const elementPosition = element.offsetTop - headerHeight;
+        window.scrollTo({
+          top: elementPosition,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      // On other pages: navigate to home page with hash
+      router.push(`/#${sectionId}`);
     }
     setIsMenuOpen(false);
   };
@@ -56,6 +68,7 @@ export default function Header() {
     { name: "Portfolio", href: "portfolio" },
     { name: "Process", href: "process" },
     { name: "Pricing", href: "pricing" },
+    { name: "Blog", href: "blog" },
     { name: "Contact", href: "contact" },
   ];
 
@@ -85,7 +98,9 @@ export default function Header() {
               <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
                 Gemini Pixel Craft
               </span>
-              <div className="text-xs text-gray-400 -mt-1">Web Development</div>
+              <div className="text-xs text-gray-400 -mt-1">
+                Web Development & Design
+              </div>
             </div>
           </Link>
 
@@ -94,7 +109,7 @@ export default function Header() {
             {navLinks.map((link) => (
               <button
                 key={link.name}
-                onClick={() => scrollToSection(link.href)}
+                onClick={() => handleNavigation(link.href)}
                 className={`relative text-gray-300 hover:text-cyan-400 transition-colors font-medium ${
                   activeSection === link.href ? "text-cyan-400" : ""
                 }`}
@@ -110,13 +125,13 @@ export default function Header() {
               <Button
                 variant="outline"
                 className="bg-cyan-400 border-cyan-400 text-white hover:bg-cyan-400 hover:text-gray-900"
-                onClick={() => scrollToSection("contact")}
+                onClick={() => handleNavigation("contact")}
               >
                 Get Quote
               </Button>
               <Button
                 className="bg-gradient-to-r from-cyan-500 to-fuchsia-500 hover:from-cyan-600 hover:to-fuchsia-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-                onClick={() => scrollToSection("pricing")}
+                onClick={() => handleNavigation("pricing")}
               >
                 Start Project
               </Button>
@@ -143,7 +158,7 @@ export default function Header() {
               {navLinks.map((link) => (
                 <button
                   key={link.name}
-                  onClick={() => scrollToSection(link.href)}
+                  onClick={() => handleNavigation(link.href)}
                   className="block w-full text-left px-4 py-3 text-cyan-400 hover:text-fuchsia-400 hover:bg-gray-800 rounded-lg transition-colors"
                 >
                   {link.name}
@@ -153,13 +168,13 @@ export default function Header() {
                 <Button
                   variant="outline"
                   className="w-full border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900"
-                  onClick={() => scrollToSection("contact")}
+                  onClick={() => handleNavigation("contact")}
                 >
                   Get Quote
                 </Button>
                 <Button
                   className="w-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 hover:from-cyan-600 hover:to-fuchsia-600"
-                  onClick={() => scrollToSection("pricing")}
+                  onClick={() => handleNavigation("pricing")}
                 >
                   Start Project
                 </Button>

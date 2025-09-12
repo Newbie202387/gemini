@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Orbitron, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -185,7 +187,9 @@ export default function RootLayout({
       </head>
       <body className={`${orbitron.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
+          <Header />
           <main className="flex-grow">{children}</main>
+          <Footer />
         </div>
         <Toaster />
 

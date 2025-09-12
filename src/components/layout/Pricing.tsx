@@ -371,7 +371,7 @@ export default function Pricing() {
 
             <Button
               variant="outline"
-              className="border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900"
+              className="border-cyan-400 text-cyan-400 bg-cyan-400/50 hover:bg-cyan-400 hover:text-gray-900"
             >
               <a href="#contact" className="flex items-center">
                 Schedule Free Consultation
@@ -393,13 +393,13 @@ export default function Pricing() {
               </h4>
               <p className="text-gray-400 text-sm">
                 Monthly billing begins after your website is completed and
-                launched. You'll receive an email confirmation when billing
+                launched. You&apos;ll receive an email confirmation when billing
                 starts.
               </p>
             </div>
             <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
               <h4 className="font-semibold mb-2 text-gray-100">
-                What's included in monthly maintenance?
+                What&apos;s included in monthly maintenance?
               </h4>
               <p className="text-gray-400 text-sm">
                 Security updates, performance monitoring, content updates, bug
@@ -412,12 +412,12 @@ export default function Pricing() {
               </h4>
               <p className="text-gray-400 text-sm">
                 Yes! You can cancel anytime with 30 days notice. Your website
-                will remain live but won't receive updates or support.
+                will remain live but won&apos;t receive updates or support.
               </p>
             </div>
             <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
               <h4 className="font-semibold mb-2 text-gray-100">
-                What happens if I don't pay the monthly fee?
+                What happens if I don&apos;t pay the monthly fee?
               </h4>
               <p className="text-gray-400 text-sm">
                 Your website stays live, but maintenance, updates, and support

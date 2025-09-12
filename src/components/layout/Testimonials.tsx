@@ -47,7 +47,10 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
+    <section
+      id="testimonials"
+      className="py-16 bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden"
+    >
       {/* Animated background elements */}
       <motion.div
         className="absolute inset-0 opacity-10"
