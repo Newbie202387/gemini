@@ -48,21 +48,6 @@ export default function Footer() {
   const support = [
     { name: "Help Center", href: "/pages/help-center", type: "page" as const },
     { name: "Contact Us", href: "contact", type: "section" as const },
-    {
-      name: "System Status",
-      href: "/pages/system-status",
-      type: "page" as const,
-    },
-    {
-      name: "Documentation",
-      href: "/pages/documentation",
-      type: "page" as const,
-    },
-    {
-      name: "API Reference",
-      href: "/pages/api-reference",
-      type: "page" as const,
-    },
   ];
 
   const legal = [
@@ -302,7 +287,7 @@ export default function Footer() {
                   Gemini Pixel Craft
                 </span>
                 <div className="text-sm text-gray-400 -mt-1">
-                  Web Development & Design
+                  Web Development & Design Agency
                 </div>
               </div>
             </Link>
@@ -488,22 +473,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-
-            {/* Certifications */}
-            <div className="mt-8">
-              <h5 className="font-semibold mb-3">Certifications</h5>
-              <div className="space-y-2">
-                <div className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-                  Google Partner
-                </div>
-                <div className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-                  AWS Certified
-                </div>
-                <div className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-                  GDPR Compliant
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

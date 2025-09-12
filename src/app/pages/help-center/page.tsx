@@ -1,7 +1,10 @@
-import React from "react";
+// src/app/help-center/page.tsx
+import HelpCenter from "@/components/pages/HelpCenter";
 
-function Help_CenterPage() {
-  return <div>Help_CenterPage</div>;
+export default function HelpCenterPage() {
+  return (
+    <>
+      <HelpCenter />
+    </>
+  );
 }
-
-export default Help_CenterPage;

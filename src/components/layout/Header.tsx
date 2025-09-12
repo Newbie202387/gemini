@@ -99,7 +99,7 @@ export default function Header() {
                 Gemini Pixel Craft
               </span>
               <div className="text-xs text-gray-400 -mt-1">
-                Web Development & Design
+                Web Development & Design Agency
               </div>
             </div>
           </Link>

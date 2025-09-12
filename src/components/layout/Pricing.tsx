@@ -150,7 +150,7 @@ export default function Pricing() {
     <section id="pricing" className="py-16 bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl font-bold mb-4 py-4 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
             Pricing Plans
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-4">

@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import {
   ShieldCheck,
-  UserCheck,
   Lock,
   Mail,
   Globe,
