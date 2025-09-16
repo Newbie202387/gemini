@@ -99,7 +99,7 @@ export default function Blog() {
                 rotate: [0, 180, 360],
               }}
               transition={{
-                duration: 25,
+                duration: 8,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -325,15 +325,7 @@ export default function Blog() {
                         </h3>
 
                         {/* Excerpt with proper line clamping */}
-                        <p
-                          className="text-gray-400 mb-4 flex-1"
-                          style={{
-                            display: "-webkit-box",
-                            WebkitLineClamp: 3,
-                            WebkitBoxOrient: "vertical" as const,
-                            overflow: "hidden",
-                          }}
-                        >
+                        <p className="text-gray-400 mb-4 flex-1">
                           {post.excerpt}
                         </p>
 

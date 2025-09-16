@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Calendar, User, Clock, Tag, Search, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { blogPosts } from "@/lib/posts";
 
@@ -36,19 +36,37 @@ export default function Blog() {
     "React",
   ];
 
-  // Filter posts based on category and search query
-  const filteredPosts = blogPosts.filter((post) => {
-    const matchesCategory =
-      activeCategory === "All Posts" || post.category === activeCategory;
-    const matchesSearch =
-      searchQuery === "" ||
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    return matchesCategory && matchesSearch;
-  });
+  // Memoized filtering for better performance
+  const filteredPosts = useMemo(() => {
+    return blogPosts.filter((post) => {
+      const matchesCategory =
+        activeCategory === "All Posts" || post.category === activeCategory;
+      const matchesSearch =
+        searchQuery === "" ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, searchQuery]);
+
+  // Optimized handlers
+  const handleCategoryChange = useCallback((category: string) => {
+    setActiveCategory(category);
+  }, []);
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    []
+  );
+
+  const handleTagClick = useCallback((tag: string) => {
+    setSearchQuery(tag);
+  }, []);
 
   const featuredPost = filteredPosts.find((post) => post.featured);
   const regularPosts = filteredPosts.filter((post) => !post.featured);
@@ -56,377 +74,293 @@ export default function Blog() {
   return (
     <section
       id="blog"
-      className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden"
+      className="py-16 lg:py-24 bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden"
     >
-      {/* Animated Background Elements */}
-      <motion.div
-        className="absolute inset-0 opacity-5"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.05 }}
-        transition={{ duration: 2 }}
-      >
-        <motion.div
-          className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-r from-cyan-400 to-fuchsia-500 rounded-full blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, 30, 0],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 left-10 w-80 h-80 bg-gradient-to-r from-fuchsia-500 to-cyan-400 rounded-full blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-      </motion.div>
+      {/* Optimized Background - Single element with reduced complexity */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+        <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-r from-cyan-400 to-fuchsia-500 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 left-10 w-80 h-80 bg-gradient-to-r from-fuchsia-500 to-cyan-400 rounded-full blur-3xl animate-pulse" />
+      </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Header Section */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header Section - Improved spacing and responsiveness */}
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 50 }}
+          className="text-center mb-12 lg:mb-16"
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <motion.h2
-            className="text-4xl lg:text-5xl font-bold mb-6 py-5 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 py-5 lg:mb-6 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
             Latest Blog Posts
-          </motion.h2>
-          <motion.p
-            className="text-lg text-gray-300 max-w-2xl mx-auto mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-          >
+          </h2>
+          <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto mb-6 lg:mb-8 px-4">
             Insights and updates on web development, design, and technology
             trends
-          </motion.p>
+          </p>
 
-          {/* Search Bar */}
-          <motion.div
-            className="max-w-md mx-auto relative"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <motion.input
+          {/* Improved Search Bar */}
+          <div className="max-w-md mx-auto relative px-4">
+            <Search className="absolute left-7 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+            <input
               type="text"
               placeholder="Search articles..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-300"
-              whileFocus={{ scale: 1.02 }}
+              onChange={handleSearchChange}
+              className="w-full pl-12 pr-4 py-3 bg-gray-800/80 backdrop-blur-sm border border-gray-700/50 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-300"
+              aria-label="Search blog posts"
             />
-          </motion.div>
+          </div>
         </motion.div>
 
-        {/* Categories */}
+        {/* Simplified Categories - Better mobile layout */}
         <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-12"
-          initial={{ opacity: 0, y: 30 }}
+          className="mb-8 lg:mb-12"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
         >
-          {categories.map((category, index) => (
-            <motion.div
-              key={category}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 px-4">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={activeCategory === category ? "default" : "outline"}
+                onClick={() => handleCategoryChange(category)}
+                size="sm"
+                className={`text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-full transition-all ${
+                  activeCategory === category
+                    ? "bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white border-0 shadow-lg"
+                    : "text-gray-300 bg-gray-800/50 border-gray-600/50 hover:bg-gray-700/50 hover:border-cyan-400/30 hover:text-cyan-400"
+                }`}
               >
-                <Button
-                  variant={activeCategory === category ? "default" : "outline"}
-                  onClick={() => setActiveCategory(category)}
-                  className={`text-sm transition-all ${
-                    activeCategory === category
-                      ? "bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white"
-                      : "text-fuchsia-500/90 bg-gradient-to-r from-cyan-500/20 to-fuchsia-500/20 border-fuchsia-500/50 hover:bg-gray-700/50 hover:border-cyan-400/30 hover:text-cyan-400"
-                  }`}
-                >
-                  {category}
-                </Button>
-              </motion.div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Popular Tags */}
-        <motion.div
-          className="mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-xl font-semibold text-gray-100 mb-4 text-center">
-            Popular Tags
-          </h3>
-          <div className="flex flex-wrap justify-center gap-2">
-            {popularTags.map((tag, index) => (
-              <motion.span
-                key={tag}
-                className="px-3 py-1 bg-cyan-400/10 text-cyan-400 text-sm rounded-full border border-cyan-400/30 cursor-pointer hover:bg-cyan-400/20 transition-colors"
-                onClick={() => setSearchQuery(tag)}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                viewport={{ once: true }}
-              >
-                #{tag}
-              </motion.span>
+                {category}
+              </Button>
             ))}
           </div>
         </motion.div>
 
-        {/* Results Count */}
+        {/* Simplified Popular Tags */}
+        <motion.div
+          className="mb-8 lg:mb-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-lg font-semibold text-gray-100 mb-4">
+            Popular Tags
+          </h3>
+          <div className="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto px-4">
+            {popularTags.map((tag) => (
+              <button
+                key={tag}
+                className="px-3 py-1 bg-cyan-400/10 text-cyan-300 text-xs sm:text-sm rounded-full border border-cyan-400/20 hover:bg-cyan-400/20 hover:border-cyan-400/40 transition-all duration-200"
+                onClick={() => handleTagClick(tag)}
+                aria-label={`Filter by ${tag} tag`}
+              >
+                #{tag}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Search Results Count */}
         {searchQuery && (
-          <motion.div
-            className="text-center mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p className="text-gray-400">
+          <div className="text-center mb-8">
+            <p className="text-gray-400 text-sm">
               Found {filteredPosts.length} article
               {filteredPosts.length !== 1 ? "s" : ""} for &quot;{searchQuery}
               &quot;
             </p>
-          </motion.div>
+          </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Featured Post */}
-          {featuredPost && (
-            <motion.div
-              className="lg:col-span-2 group"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <motion.div
-                className="bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-cyan-400/30 transition-colors duration-300 relative h-full"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
+        {/* Improved Grid Layout - Better responsive design */}
+        {filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+            {/* Featured Post - Better mobile handling */}
+            {featuredPost && (
+              <motion.article
+                className="lg:col-span-8 group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
               >
-                {/* Hover glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
-
-                <div className="overflow-hidden">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
+                <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/30 hover:border-cyan-400/30 transition-all duration-300 h-full">
+                  {/* Image Container */}
+                  <div className="relative overflow-hidden">
                     <Image
                       src={featuredPost.image}
                       alt={featuredPost.title}
                       width={800}
                       height={400}
-                      className="w-full h-64 object-cover"
+                      className="w-full h-48 sm:h-64 lg:h-72 object-cover transition-transform duration-300 group-hover:scale-105"
+                      priority
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
                     />
-                  </motion.div>
-                </div>
-                <div className="p-6 relative z-10">
-                  <div className="flex items-center text-sm text-gray-400 mb-4 space-x-4 flex-wrap gap-2">
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      <span>{featuredPost.date}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 mr-1" />
-                      <span>{featuredPost.author}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span>{featuredPost.readTime}</span>
-                    </div>
-                    <div className="flex items-center bg-cyan-400/10 text-cyan-400 px-3 py-1 rounded-full">
-                      <Tag className="w-4 h-4 mr-1" />
-                      <span>{featuredPost.category}</span>
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-cyan-400 text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
+                        Featured
+                      </span>
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-bold mb-4 text-gray-100 group-hover:text-cyan-400 transition-colors">
-                    {featuredPost.title}
-                  </h3>
-
-                  <p className="text-gray-300 mb-6">{featuredPost.excerpt}</p>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {featuredPost.tags.map((tag, index) => (
-                      <motion.span
-                        key={tag}
-                        className="px-3 py-1 bg-fuchsia-400/10 text-fuchsia-400 text-sm rounded-full border border-fuchsia-400/30"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        whileHover={{ scale: 1.05 }}
-                        viewport={{ once: true }}
-                      >
-                        #{tag}
-                      </motion.span>
-                    ))}
-                  </div>
-
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Link href={`/blog/${featuredPost.id}`}>
-                      <Button
-                        variant="ghost"
-                        className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10 flex items-center space-x-2 group/btn"
-                      >
-                        <span>Read More</span>
-                        <motion.div
-                          whileHover={{ x: 5 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </motion.div>
-                      </Button>
-                    </Link>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-
-          {/* Regular Posts */}
-          <div className="space-y-8">
-            {regularPosts.slice(0, 3).map((post, index) => (
-              <motion.div
-                key={post.id}
-                className="group"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <motion.div
-                  className="bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-cyan-400/30 transition-colors duration-300 relative h-full"
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {/* Hover glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
-
-                  <div className="overflow-hidden">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        width={600}
-                        height={400}
-                        className="w-full h-40 object-cover"
-                      />
-                    </motion.div>
-                  </div>
-                  <div className="p-4 relative z-10">
-                    <div className="flex items-center text-sm text-gray-400 mb-3 space-x-3 flex-wrap gap-2">
+                  <div className="p-6">
+                    {/* Meta Information */}
+                    <div className="flex flex-wrap gap-3 text-xs text-gray-400 mb-4">
                       <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1" />
-                        <span>{post.date}</span>
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span>{featuredPost.date}</span>
                       </div>
                       <div className="flex items-center">
-                        <User className="w-4 h-4 mr-1" />
-                        <span>{post.author}</span>
+                        <User className="w-3 h-3 mr-1" />
+                        <span>{featuredPost.author}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" />
-                        <span>{post.readTime}</span>
+                        <Clock className="w-3 h-3 mr-1" />
+                        <span>{featuredPost.readTime}</span>
                       </div>
                       <div className="flex items-center bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full">
-                        <Tag className="w-4 h-4 mr-1" />
-                        <span>{post.category}</span>
+                        <Tag className="w-3 h-3 mr-1" />
+                        <span>{featuredPost.category}</span>
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold mb-2 text-gray-100 group-hover:text-cyan-400 transition-colors">
-                      {post.title}
+                    <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2">
+                      {featuredPost.title}
                     </h3>
 
-                    <p className="text-gray-300 mb-4 line-clamp-2">
-                      {post.excerpt}
+                    <p className="text-gray-300 mb-4 line-clamp-3 text-sm sm:text-base">
+                      {featuredPost.excerpt}
                     </p>
 
-                    <motion.div
-                      whileHover={{ x: 5 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Link href={`/blog/${post.id}`}>
-                        <Button
-                          variant="ghost"
-                          className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10 flex items-center space-x-2 group/btn text-sm"
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {featuredPost.tags.slice(0, 3).map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 bg-fuchsia-400/10 text-fuchsia-400 text-xs rounded-full border border-fuchsia-400/20"
                         >
-                          <span>Read More</span>
-                          <motion.div
-                            whileHover={{ x: 5 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <ChevronRight className="w-4 h-4" />
-                          </motion.div>
-                        </Button>
-                      </Link>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
 
-        {/* Load More Button */}
-        {regularPosts.length > 3 && (
+                    <Link href={`/blog/${featuredPost.id}`}>
+                      <Button
+                        variant="outline"
+                        className="bg-transparent text-cyan-400 border-cyan-400/50 hover:bg-cyan-400/10 hover:border-cyan-400 transition-all"
+                      >
+                        Read Article
+                        <ChevronRight className="ml-2 w-4 h-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.article>
+            )}
+
+            {/* Regular Posts - Improved sidebar layout */}
+            <div className="lg:col-span-4 space-y-6">
+              {regularPosts.slice(0, 3).map((post, index) => (
+                <motion.article
+                  key={post.id}
+                  className="group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/30 hover:border-cyan-400/30 transition-all duration-300 h-full">
+                    <div className="flex sm:flex-col">
+                      {/* Image */}
+                      <div className="w-24 h-24 sm:w-full sm:h-32 flex-shrink-0 overflow-hidden">
+                        <Image
+                          src={post.image}
+                          alt={post.title}
+                          width={400}
+                          height={300}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 96px, (max-width: 1200px) 100vw, 400px"
+                        />
+                      </div>
+
+                      <div className="flex-1 p-4">
+                        {/* Meta */}
+                        <div className="flex flex-wrap gap-2 text-xs text-gray-400 mb-2">
+                          <span className="bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full">
+                            {post.category}
+                          </span>
+                          <span>{post.readTime}</span>
+                        </div>
+
+                        <h3 className="text-sm sm:text-base font-bold mb-2 text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2">
+                          {post.title}
+                        </h3>
+
+                        <p className="text-gray-400 text-xs sm:text-sm mb-3 line-clamp-2">
+                          {post.excerpt}
+                        </p>
+
+                        <Link href={`/blog/${post.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10 p-0 h-auto font-normal"
+                          >
+                            Read More
+                            <ChevronRight className="ml-1 w-3 h-3" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* No Results State */
+          <div className="text-center py-16">
+            <div className="text-4xl mb-4">🔍</div>
+            <h3 className="text-xl font-bold text-gray-100 mb-2">
+              No Articles Found
+            </h3>
+            <p className="text-gray-400 mb-6">
+              Try adjusting your search terms or browse different categories.
+            </p>
+            <Button
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("All Posts");
+              }}
+              className="bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        )}
+
+        {/* View All Button - For landing page */}
+        {filteredPosts.length > 4 && (
           <motion.div
             className="text-center mt-12"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/blog">
               <Button
                 variant="outline"
-                className="border-cyan-400 text-cyan-400 bg-cyan-400/50 hover:bg-cyan-400 hover:text-gray-900 px-8 py-3"
+                className="border-cyan-400/50 text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 hover:border-cyan-400 px-8 py-3 rounded-full transition-all duration-300"
               >
-                Load More Articles
+                View All Articles
+                <ChevronRight className="ml-2 w-4 h-4" />
               </Button>
-            </motion.div>
+            </Link>
           </motion.div>
         )}
       </div>

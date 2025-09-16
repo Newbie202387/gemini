@@ -349,11 +349,11 @@
   .step-container {
     transition-delay: calc(var(--delay, 0) * 0.5ms);
   }
-  
+
   .deliverable-item {
     animation-duration: 0.4s;
   }
-  
+
   .timeline-item,
   .benefit-item {
     animation-duration: 0.8s;
@@ -398,12 +398,12 @@
     opacity: 1 !important;
     transform: none !important;
   }
-  
+
   .shimmer-line::before {
     animation: none;
     display: none;
   }
-  
+
   .float-particle-1,
   .float-particle-2,
   .float-particle-3 {

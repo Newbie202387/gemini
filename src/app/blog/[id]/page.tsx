@@ -102,7 +102,7 @@ export default function BlogPost({
 
             {/* Article Content */}
             <article className="prose prose-invert max-w-none text-gray-200">
-              <h1 className="text-4xl lg:text-5xl font-extrabold mb-6 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
+              <h1 className="text-4xl lg:text-5xl font-extrabold mb-6 py-5 bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent">
                 {post.title}
               </h1>
               <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-400">
