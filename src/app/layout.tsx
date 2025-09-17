@@ -4,7 +4,6 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import Analytics from "@/components/layout/Analytics";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -189,7 +188,6 @@ export default function RootLayout({
       <body className={`${orbitron.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
           <Header />
-          <Analytics />
           <main className="flex-grow">{children}</main>
           <Footer />
         </div>
