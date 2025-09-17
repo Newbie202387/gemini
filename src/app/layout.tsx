@@ -32,7 +32,8 @@ export const viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Gemini Pixel Craft - Professional Web Development Services",
+    default:
+      "Gemini Pixel Craft | Professional Web Development & Digital Marketing Agency",
     template: "%s | Gemini Pixel Craft",
   },
   description:
@@ -67,7 +68,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://geminipixelcraft.com",
-    title: "Gemini Pixel Craft - Professional Web Development Services",
+    title:
+      "Gemini Pixel Craft - Professional Web Development & Digital Marketing Agency",
     description:
       "Expert web development services for modern businesses. We craft stunning, high-performance websites and applications.",
     siteName: "Gemini Pixel Craft",
@@ -76,13 +78,14 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Gemini Pixel Craft - Web Development Services",
+        alt: "Gemini Pixel Craft - Web Development & Digital Marketing Agency",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gemini Pixel Craft - Professional Web Development Services",
+    title:
+      "Gemini Pixel Craft - Professional Web Development & Digital Marketing Agency",
     description:
       "Expert web development services for modern businesses. We craft stunning, high-performance websites and applications.",
     creator: "@geminipixelcraft",
@@ -144,7 +147,7 @@ export default function RootLayout({
               url: "https://geminipixelcraft.com",
               logo: "https://geminipixelcraft.com/logo.png",
               description:
-                "Professional web development services for modern businesses",
+                "Professional Web Development & Digital Marketing Agency for modern businesses",
               address: {
                 "@type": "PostalAddress",
                 addressLocality: "Tampa",
