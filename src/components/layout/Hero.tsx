@@ -115,7 +115,7 @@ export default function Hero() {
                   onClick={() => setIsVideoModalOpen(true)}
                 >
                   <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                  Watch Demo
+                  Watch Promo
                 </Button>
               </div>
 
