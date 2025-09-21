@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { blogPosts } from "@/lib/posts";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All Posts");
@@ -435,6 +436,7 @@ export default function Blog() {
             )}
           </div>
         </section>
+        <ScrollToTop />
       </main>
     </>
   );

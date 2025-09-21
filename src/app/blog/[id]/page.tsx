@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { blogPosts } from "@/lib/posts";
 import Link from "next/link";
 import { use } from "react";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 
 export default function BlogPost({
   params,
@@ -197,6 +198,7 @@ export default function BlogPost({
           </motion.div>
         </div>
       </div>
+      <ScrollToTop />
     </section>
   );
 }
