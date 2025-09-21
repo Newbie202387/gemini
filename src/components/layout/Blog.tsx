@@ -68,7 +68,8 @@ export default function Blog() {
     setSearchQuery(tag);
   }, []);
 
-  const featuredPost = filteredPosts.find((post) => post.featured);
+  // UPDATED: Support multiple featured posts
+  const featuredPosts = filteredPosts.filter((post) => post.featured);
   const regularPosts = filteredPosts.filter((post) => !post.featured);
 
   return (
@@ -83,7 +84,7 @@ export default function Blog() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header Section - Improved spacing and responsiveness */}
+        {/* Header Section */}
         <motion.div
           className="text-center mb-12 lg:mb-16"
           initial={{ opacity: 0, y: 30 }}
@@ -99,7 +100,7 @@ export default function Blog() {
             trends
           </p>
 
-          {/* Improved Search Bar */}
+          {/* Search Bar */}
           <div className="max-w-md mx-auto relative px-4">
             <Search className="absolute left-7 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
             <input
@@ -113,7 +114,7 @@ export default function Blog() {
           </div>
         </motion.div>
 
-        {/* Simplified Categories - Better mobile layout */}
+        {/* Categories */}
         <motion.div
           className="mb-8 lg:mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -140,7 +141,7 @@ export default function Blog() {
           </div>
         </motion.div>
 
-        {/* Simplified Popular Tags */}
+        {/* Popular Tags */}
         <motion.div
           className="mb-8 lg:mb-12 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -176,29 +177,38 @@ export default function Blog() {
           </div>
         )}
 
-        {/* Improved Grid Layout - Better responsive design */}
-        {filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-            {/* Featured Post - Better mobile handling */}
-            {featuredPost && (
+        {/* UPDATED: Featured Posts Section */}
+        {featuredPosts.length > 0 && (
+          <div className="mb-12">
+            <motion.h3
+              className="text-2xl font-bold text-gray-100 mb-8 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              Featured Articles
+            </motion.h3>
+
+            {/* Single Featured Post Layout (when only 1 featured) */}
+            {featuredPosts.length === 1 && (
               <motion.article
-                className="lg:col-span-8 group"
+                className="group max-w-4xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
                 <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/30 hover:border-cyan-400/30 transition-all duration-300 h-full">
-                  {/* Image Container */}
                   <div className="relative overflow-hidden">
                     <Image
-                      src={featuredPost.image}
-                      alt={featuredPost.title}
+                      src={featuredPosts[0].image}
+                      alt={featuredPosts[0].title}
                       width={800}
                       height={400}
-                      className="w-full h-48 sm:h-64 lg:h-72 object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-64 lg:h-80 object-cover transition-transform duration-300 group-hover:scale-105"
                       priority
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
+                      sizes="(max-width: 1200px) 100vw, 800px"
                     />
                     <div className="absolute top-4 left-4">
                       <span className="bg-cyan-400 text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
@@ -207,48 +217,48 @@ export default function Blog() {
                     </div>
                   </div>
 
-                  <div className="p-6">
+                  <div className="p-6 lg:p-8">
                     {/* Meta Information */}
                     <div className="flex flex-wrap gap-3 text-xs text-gray-400 mb-4">
                       <div className="flex items-center">
                         <Calendar className="w-3 h-3 mr-1" />
-                        <span>{featuredPost.date}</span>
+                        <span>{featuredPosts[0].date}</span>
                       </div>
                       <div className="flex items-center">
                         <User className="w-3 h-3 mr-1" />
-                        <span>{featuredPost.author}</span>
+                        <span>{featuredPosts[0].author}</span>
                       </div>
                       <div className="flex items-center">
                         <Clock className="w-3 h-3 mr-1" />
-                        <span>{featuredPost.readTime}</span>
+                        <span>{featuredPosts[0].readTime}</span>
                       </div>
                       <div className="flex items-center bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full">
                         <Tag className="w-3 h-3 mr-1" />
-                        <span>{featuredPost.category}</span>
+                        <span>{featuredPosts[0].category}</span>
                       </div>
                     </div>
 
-                    <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2">
-                      {featuredPost.title}
+                    <h3 className="text-2xl lg:text-3xl font-bold mb-4 text-gray-100 group-hover:text-cyan-400 transition-colors">
+                      {featuredPosts[0].title}
                     </h3>
 
-                    <p className="text-gray-300 mb-4 line-clamp-3 text-sm sm:text-base">
-                      {featuredPost.excerpt}
+                    <p className="text-gray-300 mb-6 text-base lg:text-lg">
+                      {featuredPosts[0].excerpt}
                     </p>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {featuredPost.tags.slice(0, 3).map((tag) => (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {featuredPosts[0].tags.slice(0, 4).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-fuchsia-400/10 text-fuchsia-400 text-xs rounded-full border border-fuchsia-400/20"
+                          className="px-3 py-1 bg-fuchsia-400/10 text-fuchsia-400 text-sm rounded-full border border-fuchsia-400/20"
                         >
                           #{tag}
                         </span>
                       ))}
                     </div>
 
-                    <Link href={`/blog/${featuredPost.id}`}>
+                    <Link href={`/blog/${featuredPosts[0].id}`}>
                       <Button
                         variant="outline"
                         className="bg-transparent text-cyan-400 border-cyan-400/50 hover:bg-cyan-400/10 hover:border-cyan-400 transition-all"
@@ -262,9 +272,109 @@ export default function Blog() {
               </motion.article>
             )}
 
-            {/* Regular Posts - Improved sidebar layout */}
-            <div className="lg:col-span-4 space-y-6">
-              {regularPosts.slice(0, 3).map((post, index) => (
+            {/* Multiple Featured Posts Grid Layout */}
+            {featuredPosts.length > 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+                {featuredPosts.map((post, index) => (
+                  <motion.article
+                    key={post.id}
+                    className="group"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/30 hover:border-cyan-400/30 transition-all duration-300 h-full flex flex-col">
+                      <div className="relative overflow-hidden">
+                        <Image
+                          src={post.image}
+                          alt={post.title}
+                          width={400}
+                          height={250}
+                          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-cyan-400 text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
+                            Featured
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-6 flex-1 flex flex-col">
+                        {/* Meta Information */}
+                        <div className="flex flex-wrap gap-2 text-xs text-gray-400 mb-3">
+                          <div className="flex items-center">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            <span>{post.date}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Clock className="w-3 h-3 mr-1" />
+                            <span>{post.readTime}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full text-xs mb-3 w-fit">
+                          <Tag className="w-3 h-3 mr-1" />
+                          <span>{post.category}</span>
+                        </div>
+
+                        <h3 className="text-lg font-bold mb-3 text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2 flex-grow-0">
+                          {post.title}
+                        </h3>
+
+                        <p className="text-gray-300 mb-4 text-sm line-clamp-3 flex-grow">
+                          {post.excerpt}
+                        </p>
+
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {post.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-1 bg-fuchsia-400/10 text-fuchsia-400 text-xs rounded-full border border-fuchsia-400/20"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="mt-auto">
+                          <Link href={`/blog/${post.id}`}>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="bg-transparent text-cyan-400 border-cyan-400/50 hover:bg-cyan-400/10 hover:border-cyan-400 transition-all w-full"
+                            >
+                              Read Article
+                              <ChevronRight className="ml-2 w-4 h-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* UPDATED: Regular Posts Section */}
+        {regularPosts.length > 0 && (
+          <>
+            <motion.h3
+              className="text-2xl font-bold text-gray-100 mb-8 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              {featuredPosts.length > 0 ? "More Articles" : "Latest Articles"}
+            </motion.h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {regularPosts.map((post, index) => (
                 <motion.article
                   key={post.id}
                   className="group"
@@ -273,37 +383,36 @@ export default function Blog() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/30 hover:border-cyan-400/30 transition-all duration-300 h-full">
-                    <div className="flex sm:flex-col">
-                      {/* Image */}
-                      <div className="w-24 h-24 sm:w-full sm:h-32 flex-shrink-0 overflow-hidden">
-                        <Image
-                          src={post.image}
-                          alt={post.title}
-                          width={400}
-                          height={300}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="(max-width: 768px) 96px, (max-width: 1200px) 100vw, 400px"
-                        />
+                  <div className="bg-gray-800/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/30 hover:border-cyan-400/30 transition-all duration-300 h-full flex flex-col">
+                    <div className="relative overflow-hidden">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        width={400}
+                        height={200}
+                        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    </div>
+
+                    <div className="p-5 flex-1 flex flex-col">
+                      {/* Meta */}
+                      <div className="flex flex-wrap gap-2 text-xs text-gray-400 mb-3">
+                        <span className="bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full">
+                          {post.category}
+                        </span>
+                        <span>{post.readTime}</span>
                       </div>
 
-                      <div className="flex-1 p-4">
-                        {/* Meta */}
-                        <div className="flex flex-wrap gap-2 text-xs text-gray-400 mb-2">
-                          <span className="bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full">
-                            {post.category}
-                          </span>
-                          <span>{post.readTime}</span>
-                        </div>
+                      <h3 className="text-base font-bold mb-3 text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
 
-                        <h3 className="text-sm sm:text-base font-bold mb-2 text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2">
-                          {post.title}
-                        </h3>
+                      <p className="text-gray-400 text-sm mb-4 line-clamp-3 flex-grow">
+                        {post.excerpt}
+                      </p>
 
-                        <p className="text-gray-400 text-xs sm:text-sm mb-3 line-clamp-2">
-                          {post.excerpt}
-                        </p>
-
+                      <div className="mt-auto">
                         <Link href={`/blog/${post.id}`}>
                           <Button
                             variant="ghost"
@@ -320,9 +429,11 @@ export default function Blog() {
                 </motion.article>
               ))}
             </div>
-          </div>
-        ) : (
-          /* No Results State */
+          </>
+        )}
+
+        {/* No Results State */}
+        {filteredPosts.length === 0 && (
           <div className="text-center py-16">
             <div className="text-4xl mb-4">🔍</div>
             <h3 className="text-xl font-bold text-gray-100 mb-2">
@@ -343,8 +454,8 @@ export default function Blog() {
           </div>
         )}
 
-        {/* View All Button - For landing page */}
-        {filteredPosts.length > 4 && (
+        {/* View All Button */}
+        {filteredPosts.length > 6 && (
           <motion.div
             className="text-center mt-12"
             initial={{ opacity: 0, y: 20 }}

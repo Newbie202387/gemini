@@ -110,7 +110,7 @@ export const blogPosts: BlogPost[] = [
         category: "Design",
         image:
             "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&h=400&fit=crop",
-        featured: true,
+        featured: false,
         tags: ["UI/UX", "Design", "Accessibility"],
         content: `
       <h2><strong>Introduction</strong></h2><br>
@@ -302,7 +302,7 @@ export const blogPosts: BlogPost[] = [
 
         <h2><em><strong><u>Lightning-Fast Development Server</u></strong></em></h2><br>
         <p>Turbopack's incremental bundling approach means your development server starts up to 70% faster than with Webpack. More importantly, Hot Module Replacement (HMR) updates feel nearly instantaneous—even in large codebases with thousands of modules. This eliminates the frustrating wait times that disrupt developer workflow and creativity.</p><br>
-        
+
         <p>The architecture leverages Rust's performance capabilities and intelligent caching strategies to only process changed modules, making development feedback loops remarkably responsive. Large projects that previously took minutes to start now initialize in seconds, fundamentally changing the development experience.</p><br>
 
         <h2><em><strong><u>How to Enable Turbopack</u></strong></em></h2><br>
