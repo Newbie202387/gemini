@@ -13,8 +13,13 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
-export default function Contact() {
+// Contact Form Component (to be wrapped with reCAPTCHA provider)
+function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,6 +34,9 @@ export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
+
+  // Get reCAPTCHA hook
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const projectTypes = [
     "Website Development",
@@ -59,16 +67,29 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not available yet");
+      setSubmitStatus("error");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus("idle");
 
     try {
+      // Execute reCAPTCHA
+      const recaptchaToken = await executeRecaptcha("contact_form");
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          recaptchaToken, // Include reCAPTCHA token
+        }),
       });
 
       if (response.ok) {
@@ -86,7 +107,8 @@ export default function Contact() {
       } else {
         throw new Error("Failed to send message");
       }
-    } catch {
+    } catch (error) {
+      console.error("Form submission error:", error);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -643,6 +665,34 @@ export default function Contact() {
                   By submitting this form, you agree to our privacy policy.
                   We&apos;ll never share your information.
                 </motion.p>
+
+                {/* reCAPTCHA Notice */}
+                <motion.p
+                  className="text-center text-xs text-gray-500 mt-2"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                >
+                  This site is protected by reCAPTCHA and the Google{" "}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    className="text-cyan-400 hover:text-cyan-300"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Privacy Policy
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://policies.google.com/terms"
+                    className="text-cyan-400 hover:text-cyan-300"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms of Service
+                  </a>{" "}
+                  apply.
+                </motion.p>
               </div>
             </motion.form>
           </motion.div>
@@ -691,5 +741,16 @@ export default function Contact() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+// Main Contact component wrapped with reCAPTCHA provider
+export default function Contact() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+    >
+      <ContactForm />
+    </GoogleReCaptchaProvider>
   );
 }

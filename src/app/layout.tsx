@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack/server";
 import { Orbitron, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -136,6 +137,20 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
 
+        {/* Google Tag Manager Script */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GTM_ID}');
+          `}
+        </Script>
+
         {/* Schema.org structured data */}
         <script
           type="application/ld+json"
@@ -189,17 +204,17 @@ export default function RootLayout({
         />
       </head>
       <body className={`${orbitron.className} antialiased`}>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
-        <Toaster />
+        <StackProvider app={stackServerApp}>
+          <StackTheme>
+            <div className="flex flex-col min-h-screen">
+              <main className="flex-grow">{children}</main>
+            </div>
+            <Toaster />
 
-        {/* Load scripts at the end for better performance */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
+            {/* Load scripts at the end for better performance */}
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
               // Basic performance monitoring
               if ('performance' in window) {
                 window.addEventListener('load', function() {
@@ -213,8 +228,10 @@ export default function RootLayout({
                 });
               }
             `,
-          }}
-        />
+              }}
+            />
+          </StackTheme>
+        </StackProvider>
       </body>
     </html>
   );

@@ -13,6 +13,8 @@ import CookieConsent from "@/components/layout/CookieConsent";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import AboutUs from "@/components/layout/About";
 import Blog from "@/components/layout/Blog";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -37,6 +39,9 @@ function HomeContent() {
 
   return (
     <>
+      {/* NavigationBar */}
+      <Header />
+
       {/* Main content sections */}
       <Hero />
 
@@ -65,6 +70,7 @@ function HomeContent() {
       <Testimonials />
 
       {/* Footer with navigation and social links */}
+      <Footer />
 
       {/* Floating components */}
       <ChatBot />
